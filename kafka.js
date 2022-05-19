@@ -1,5 +1,10 @@
 const { Kafka } = require('kafkajs');
 
+// set these environment variables so that kafka doesn't complain
+// about a barebones setup
+process.env.KAFKAJS_NO_PARTITIONER_WARNING = 1;
+process.env.KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR = 1;
+
 const kafka = new Kafka({
   clientId: 'acm_rides',
   brokers: ['localhost:9092'],
