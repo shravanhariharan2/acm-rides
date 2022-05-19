@@ -5,27 +5,19 @@ const kafka = new Kafka({
   brokers: ['localhost:9092'],
 });
 const producer = kafka.producer();
-const consumer = kafka.consumer({ groupId: 'acm_rides' });
 
 const getProducer = async () => {
   await producer.connect();
   return producer;
 }
 
-const createConsumer = async () => {
+const getConsumer = async () => {
+  const consumer = kafka.consumer({ groupId: 'acm_rides' });
   await consumer.connect();
-  
-  await consumer.subscribe({ topic: 'ride_requests', fromBeginning: true })
-
-  await consumer.run({
-    eachMessage: async ({ message }) => {
-      const rideRequestMessage = message.value.toString();
-    }
-  })
+  return consumer;
 }
-
-// createConsumer();
 
 module.exports = {
   getProducer,
+  getConsumer,
 }

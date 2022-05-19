@@ -24,7 +24,7 @@ const Ride = sequelize.define('Ride', {
     allowNull: true
   },
   cost: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.DECIMAL,
     allowNull: false
   },
 });
