@@ -7,14 +7,23 @@ const Driver = require('./models/driver');
 
 const router = express.Router();
 
-router.post('/passenger', async (req, res) => {
+router.post('/passenger', async (req, res, next) => {
   const { passenger } = req.body;
+
   passenger.id = uuid.v4();
-  const createdPassenger = await Passenger.create(passenger);
-  res.status(200).json({ passenger: createdPassenger });
+  passenger.balance = 100;
+
+  console.log(passenger)
+
+  try {
+    const createdPassenger = await Passenger.create(passenger);
+    res.status(200).json({ passenger: createdPassenger });
+  } catch (e) {
+    res.status(500).json({ error: e.message })
+  }
 })
 
-router.post('/passenger/ride', async (req, res) => {
+router.post('/passenger/ride', async (req, res, next) => {
   const { fromLocation, toLocation, passengerId } = req.body;
   const rideRequest = {
     id: uuid.v4(),
@@ -37,14 +46,19 @@ router.post('/passenger/ride', async (req, res) => {
   // })
 });
 
-router.post('/driver', async (req, res) => {
+router.post('/driver', async (req, res, next) => {
   const { driver } = req.body;
   driver.id = uuid.v4();
-  const createdDriver = await Driver.create(driver);
-  res.status(200).json({ driver: createdDriver });
+  
+  try {
+    const createdDriver = await Driver.create(driver);
+    res.status(200).json({ driver: createdDriver });
+  } catch (e) {
+    res.status(500).json({ error: e.message })
+  }
 })
 
-router.post('/driver/ride', async (req, res) => {
+router.post('/driver/ride', async (req, res, next) => {
   
 });
 
