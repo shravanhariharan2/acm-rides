@@ -34,16 +34,7 @@ router.post('/passenger/ride', async (req, res, next) => {
   }
 
   const producer = await getProducer();
-  producer.send({
-    topic: 'ride_requests',
-    messages: [
-      {
-        value: JSON.stringify(rideRequest),
-        timestamp: 200000,
-      },
-    ],
-  });
-  console.log('\n\nSend message to ride_requests message queue');
+  // TODO (1): send a message to the 'ride_requests' topic with the ride request data
 
   res.status(201).json({ ride: rideRequest });
 });
@@ -61,26 +52,11 @@ router.post('/driver', async (req, res, next) => {
 })
 
 router.post('/driver/ride', async (req, res, next) => {
-  const consumer = await getConsumer();
   const { driver } = req.body;
 
-  await consumer.subscribe({ topic: 'ride_requests', fromBeginning: true });
-  await consumer.run({
-    eachMessage: async ({ message }) => {
-      console.log("Received message from ride_requests message queue")
-      const rideDetails = JSON.parse(message.value);
-      
-      rideDetails.driver = driver;
-
-      try {
-        await Ride.create(rideDetails);
-        res.status(200).json({ ride: rideDetails });
-        consumer.pause([{ topic: 'ride_requests' }]);
-      } catch (e) {
-        res.status(500).json({ error: e.message });
-      }
-    }
-  });
+  const consumer = await getConsumer();
+  // TODO (2): subscribe to the 'ride_requests' topic and
+  // define logic for what happens when a message is consumed
 });
 
 module.exports = router;
